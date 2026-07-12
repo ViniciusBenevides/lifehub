@@ -9,7 +9,7 @@ Ao fim de cada fase: `pnpm build && pnpm lint` sem erros + commit atômico.
 
 ---
 
-## Fase 0 — Fundação ✅ (em andamento)
+## Fase 0 — Fundação ✅ (concluída em 2026-07-12)
 
 - [x] Scaffold Next.js + TS strict + Tailwind v4 (pnpm)
 - [x] ESLint + Prettier + Husky + lint-staged (pre-commit)
@@ -23,9 +23,9 @@ Ao fim de cada fase: `pnpm build && pnpm lint` sem erros + commit atômico.
 - [x] Páginas: login, cadastro, recuperar/redefinir senha
 - [x] Shell responsivo: sidebar colapsável (desktop) + bottom tabs (mobile)
 - [x] Página de perfil (conta, tema, sair) + placeholders dos módulos
-- [ ] Rodar migration no Neon (aguarda `DATABASE_URL`)
-- [ ] Verificação fim-a-fim: cadastro → seed → login → rotas protegidas
-- [ ] Repo GitHub + deploy Vercel funcionando com login real
+- [x] Rodar migration no Neon (14 tabelas aplicadas)
+- [x] Verificação fim-a-fim: cadastro → seed → login → rotas protegidas
+- [x] Repo GitHub + deploy Vercel funcionando com login real
 
 ## Fase 1 — Metas + Hábitos
 

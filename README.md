@@ -2,6 +2,8 @@
 
 Seu **Life OS** pessoal: metas, hábitos, finanças, sonhos e atividades em um só lugar — mobile-first, em português, com dark mode.
 
+**Demo:** [lifehub-nine-iota.vercel.app](https://lifehub-nine-iota.vercel.app)
+
 > Projeto em construção por fases. Acompanhe o progresso em [PLAN.md](./PLAN.md) e as decisões de arquitetura em [docs/decisions.md](./docs/decisions.md).
 
 ## Stack

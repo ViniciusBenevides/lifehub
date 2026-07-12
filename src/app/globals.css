@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
+/* Variantes e utilitários do shadcn (copiado de shadcn@4.13.0/tailwind.css —
+   o pacote da CLI não é dependência de runtime). */
+@import "./shadcn-utilities.css";
 
 @custom-variant dark (&:is(.dark *));
 

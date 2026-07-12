@@ -236,6 +236,10 @@ export const tasks = pgTable(
     status: taskStatusEnum("status").notNull().default("todo"),
     priority: taskPriorityEnum("priority").notNull().default("medium"),
     recurrenceRule: text("recurrence_rule"),
+    // Aponta para a tarefa recorrente que originou esta ocorrência gerada.
+    recurringSourceId: uuid("recurring_source_id").references((): AnyPgColumn => tasks.id, {
+      onDelete: "cascade",
+    }),
     completedAt: timestamp("completed_at", { withTimezone: true }),
     order: integer("order").notNull().default(0),
   },
@@ -243,5 +247,6 @@ export const tasks = pgTable(
     index("tasks_user_id_date_idx").on(table.userId, table.date),
     index("tasks_goal_id_idx").on(table.goalId),
     index("tasks_user_id_status_idx").on(table.userId, table.status),
+    index("tasks_recurring_source_id_idx").on(table.recurringSourceId),
   ],
 );

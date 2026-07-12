@@ -25,3 +25,21 @@ export function formatDateShort(date: Date): string {
 export function toDateKey(date: Date): string {
   return format(date, "yyyy-MM-dd");
 }
+
+/** Converte "yyyy-MM-dd" em Date local (sem deslocamento de fuso). */
+export function fromDateKey(key: string): Date {
+  const [year, month, day] = key.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/** Rótulo de prazo: "faltam X dias", "hoje", "atrasada há X dias". */
+export function deadlineLabel(targetDate: string, today = new Date()): string {
+  const target = fromDateKey(targetDate);
+  const reference = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const diffDays = Math.round((target.getTime() - reference.getTime()) / 86_400_000);
+  if (diffDays === 0) return "vence hoje";
+  if (diffDays === 1) return "falta 1 dia";
+  if (diffDays > 1) return `faltam ${diffDays} dias`;
+  if (diffDays === -1) return "atrasada há 1 dia";
+  return `atrasada há ${Math.abs(diffDays)} dias`;
+}

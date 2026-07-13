@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Orbit, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
-import { NAV_ITEMS } from "@/components/features/shell/nav-items";
+import { isNavActive, NAV_GROUPS } from "@/components/features/shell/nav-items";
 import { UserMenu, type ShellUser } from "@/components/features/shell/user-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useSidebarStore } from "@/hooks/use-sidebar-store";
@@ -21,6 +21,16 @@ export function AppSidebar({ user }: { user: ShellUser }) {
     void useSidebarStore.persist.rehydrate();
   }, []);
 
+  // Only the most specific matching route is highlighted (e.g. "Estatísticas"
+  // wins over "Gestão" on /financas/estatisticas).
+  const activeHref = NAV_GROUPS.flatMap((group) => group.items)
+    .filter((item) => isNavActive(pathname, item.href))
+    .reduce<string | null>(
+      (longest, item) =>
+        longest === null || item.href.length > longest.length ? item.href : longest,
+      null,
+    );
+
   return (
     <aside
       className={cn(
@@ -35,38 +45,54 @@ export function AppSidebar({ user }: { user: ShellUser }) {
         {!collapsed && <span className="text-lg font-semibold tracking-tight">LifeHub</span>}
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1 px-2" aria-label="Navegação principal">
-        {NAV_ITEMS.map((item) => {
-          const active = pathname.startsWith(item.href);
-          const link = (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
-                "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
-                active
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                collapsed && "justify-center px-0",
-              )}
-            >
-              <item.icon className="size-4.5 shrink-0" aria-hidden />
-              {!collapsed && item.label}
-            </Link>
-          );
+      <nav
+        className="flex flex-1 flex-col gap-1 overflow-y-auto px-2 pb-2"
+        aria-label="Navegação principal"
+      >
+        {NAV_GROUPS.map((group, groupIndex) => (
+          <React.Fragment key={group.label ?? groupIndex}>
+            {group.label ? (
+              collapsed ? (
+                <div className="mx-2 my-2 border-t" role="presentation" />
+              ) : (
+                <p className="px-3 pt-4 pb-1 text-[11px] font-semibold tracking-widest text-muted-foreground/70 uppercase">
+                  {group.label}
+                </p>
+              )
+            ) : null}
+            {group.items.map((item) => {
+              const active = item.href === activeHref;
+              const link = (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
+                    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+                    active
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    collapsed && "justify-center px-0",
+                  )}
+                >
+                  <item.icon className="size-4.5 shrink-0" aria-hidden />
+                  {!collapsed && item.label}
+                </Link>
+              );
 
-          if (!collapsed) {
-            return link;
-          }
-          return (
-            <Tooltip key={item.href}>
-              <TooltipTrigger asChild>{link}</TooltipTrigger>
-              <TooltipContent side="right">{item.label}</TooltipContent>
-            </Tooltip>
-          );
-        })}
+              if (!collapsed) {
+                return link;
+              }
+              return (
+                <Tooltip key={item.href}>
+                  <TooltipTrigger asChild>{link}</TooltipTrigger>
+                  <TooltipContent side="right">{item.label}</TooltipContent>
+                </Tooltip>
+              );
+            })}
+          </React.Fragment>
+        ))}
       </nav>
 
       <div className="flex flex-col gap-1 border-t p-2">

@@ -13,11 +13,11 @@ export function proxy(request: NextRequest) {
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
 
   if (pathname === "/") {
-    return NextResponse.redirect(new URL(hasSessionCookie ? "/dashboard" : "/login", request.url));
+    return NextResponse.redirect(new URL(hasSessionCookie ? "/inicio" : "/login", request.url));
   }
 
   if (isAuthRoute && hasSessionCookie) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/inicio", request.url));
   }
 
   if (!isAuthRoute && !hasSessionCookie) {
@@ -32,12 +32,25 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/",
+    "/inicio/:path*",
     "/dashboard/:path*",
     "/metas/:path*",
     "/habitos/:path*",
     "/financas/:path*",
     "/sonhos/:path*",
     "/atividades/:path*",
+    "/projetos/:path*",
+    "/notas/:path*",
+    "/estudos/:path*",
+    "/pomodoro/:path*",
+    "/compras/:path*",
+    "/aniversarios/:path*",
+    "/diario/:path*",
+    "/humor/:path*",
+    "/diario-sonhos/:path*",
+    "/pesquisar/:path*",
+    "/backup/:path*",
+    "/temas/:path*",
     "/perfil/:path*",
     "/mais/:path*",
     "/login",

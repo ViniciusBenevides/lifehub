@@ -47,7 +47,7 @@ export function SignupForm({ googleEnabled }: SignupFormProps) {
       setFormError(translateAuthError(error.code));
       return;
     }
-    router.push("/dashboard");
+    router.push("/inicio");
     router.refresh();
   }
 
@@ -105,7 +105,7 @@ export function SignupForm({ googleEnabled }: SignupFormProps) {
             {googleEnabled ? (
               <>
                 <FieldSeparator>ou</FieldSeparator>
-                <GoogleButton redirectTo="/dashboard" />
+                <GoogleButton redirectTo="/inicio" />
               </>
             ) : null}
           </FieldGroup>

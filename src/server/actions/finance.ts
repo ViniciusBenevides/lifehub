@@ -25,6 +25,7 @@ function errorMessage(error: unknown): string {
 function revalidateFinance() {
   revalidatePath("/financas");
   revalidatePath("/dashboard");
+  revalidatePath("/inicio");
 }
 
 export async function createTransactionAction(

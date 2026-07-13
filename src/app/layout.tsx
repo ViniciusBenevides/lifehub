@@ -3,6 +3,7 @@ import { Inter, Geist_Mono } from "next/font/google";
 
 import { Providers } from "@/components/providers";
 import { ServiceWorkerRegister } from "@/components/features/shell/sw-register";
+import { COLOR_THEME_INIT_SCRIPT } from "@/lib/color-theme";
 
 import "./globals.css";
 
@@ -51,6 +52,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col">
+        <script dangerouslySetInnerHTML={{ __html: COLOR_THEME_INIT_SCRIPT }} />
         <Providers>{children}</Providers>
         <ServiceWorkerRegister />
       </body>

@@ -10,7 +10,7 @@ function safeRedirect(target: string | undefined): string {
   if (target && target.startsWith("/") && !target.startsWith("//")) {
     return target;
   }
-  return "/dashboard";
+  return "/inicio";
 }
 
 export default async function LoginPage({

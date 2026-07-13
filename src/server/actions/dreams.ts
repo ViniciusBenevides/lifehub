@@ -25,6 +25,7 @@ function revalidateDreams() {
   revalidatePath("/sonhos");
   revalidatePath("/metas");
   revalidatePath("/dashboard");
+  revalidatePath("/inicio");
 }
 
 export async function createDreamAction(

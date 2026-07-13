@@ -19,6 +19,7 @@ function errorMessage(error: unknown): string {
 function revalidateTasks() {
   revalidatePath("/atividades");
   revalidatePath("/dashboard");
+  revalidatePath("/inicio");
 }
 
 export async function createTaskAction(input: unknown): Promise<ActionResult<tasksService.Task>> {

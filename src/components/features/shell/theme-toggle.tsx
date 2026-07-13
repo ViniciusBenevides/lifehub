@@ -4,6 +4,7 @@ import * as React from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import { applyColorTheme, clearColorTheme } from "@/lib/color-theme";
 import { cn } from "@/lib/utils";
 
 const OPTIONS = [
@@ -39,7 +40,13 @@ export function ThemeToggle() {
             role="radio"
             aria-checked={active}
             title={option.label}
-            onClick={() => setTheme(option.value)}
+            onClick={() => {
+              setTheme(option.value);
+              // Keep the color theme in sync with the quick light/dark toggle.
+              if (option.value === "light") applyColorTheme("claro");
+              else if (option.value === "dark") applyColorTheme("escuro");
+              else clearColorTheme();
+            }}
             className={cn(
               "flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors",
               "hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",

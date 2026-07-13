@@ -27,6 +27,7 @@ function errorMessage(error: unknown): string {
 function revalidateGoals(goalId?: string) {
   revalidatePath("/metas");
   revalidatePath("/dashboard");
+  revalidatePath("/inicio");
   if (goalId) revalidatePath(`/metas/${goalId}`);
 }
 

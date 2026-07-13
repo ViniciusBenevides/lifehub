@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "LifeHub",
     description: "Metas, hábitos, finanças, sonhos e atividades em um só lugar.",
     id: "/",
-    start_url: "/dashboard",
+    start_url: "/inicio",
     display: "standalone",
     orientation: "portrait",
     lang: "pt-BR",

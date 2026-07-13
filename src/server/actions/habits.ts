@@ -23,6 +23,7 @@ function errorMessage(error: unknown): string {
 function revalidateHabits(habitId?: string) {
   revalidatePath("/habitos");
   revalidatePath("/dashboard");
+  revalidatePath("/inicio");
   if (habitId) revalidatePath(`/habitos/${habitId}`);
 }
 

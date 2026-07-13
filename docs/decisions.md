@@ -14,3 +14,15 @@ Registro das decisões tomadas quando o spec deixava margem de escolha — sempr
 8. **Seed no cadastro.** Áreas da vida (6) e categorias financeiras BR (14) são criadas via `databaseHooks.user.create.after` do Better Auth, em `src/server/services/user-setup.ts` (idempotente).
 9. **Recorrência de transações.** Coluna `recurringSourceId` liga a ocorrência gerada à transação recorrente de origem, permitindo geração idempotente por mês (Fase 2).
 10. **Categoria com transações não pode ser excluída** (`onDelete: restrict`) — o usuário precisa reatribuir as transações antes; orçamentos caem junto com a categoria (`cascade`).
+
+## 2026-07-12 — Fases 1 a 4
+
+11. **Recorrência de transações: apenas mensal.** É o caso real de finanças pessoais (salário, assinaturas, aluguel). A geração acontece ao carregar o mês (inclusive meses futuros, útil para planejamento) e é idempotente via `recurringSourceId`. Dia 29–31 é clampado ao fim de meses curtos.
+12. **Recorrência de tarefas** (diária/semanal/mensal): a tarefa original é o _template_ (fica oculta nas listas e não conta como atrasada); ocorrências são geradas no intervalo consultado com `recurringSourceId` (migration 0001). A primeira ocorrência é a seguinte à data do template.
+13. **Streaks respeitam a frequência**: diário conta dias consecutivos (hoje pendente não quebra); dias fixos ignoram dias não agendados; "X por semana" conta **semanas** consecutivas batendo a cota (semana corrente incompleta não quebra). Semana começa no domingo (pt-BR).
+14. **"Transformar em meta"**: sonho com custo vira meta **numérica de economia** (alvo em R$, unidade "R$"); sem custo vira percentual manual. A sugestão de aporte mensal = custo ÷ meses até o prazo é informada no toast (não cria orçamento — orçamentos limitam despesas por categoria, não rastreiam poupança). A barra "Economia" do card do sonho reflete o progresso da meta.
+15. **Histórico de atualizações da meta adiado** — exigiria uma tabela de eventos; `createdAt`/`completedAt` cobrem o essencial da Fase 1.
+16. **Cores dos gráficos validadas** com o validador de paleta (CVD + contraste) nos dois temas: receitas `#059669`, despesas `#e11d48` (claro) / `#f43f5e` (escuro). O donut usa as cores das categorias do usuário com legenda-lista (identidade nunca só por cor) e fatias limitadas a 6 (+ "Outras").
+17. **PWA com service worker mínimo**: cache-first apenas para assets estáticos imutáveis (`/_next/static`, `/icons`); dados sempre da rede. `next-pwa` foi dispensado — 40 linhas de SW nativo bastam.
+18. **Zustand** usado onde há estado de UI compartilhado/persistente (sidebar recolhida, com `persist` + `skipHydration`); modais e filtros locais ficam em `useState`.
+19. **Testes** cobrem as funções puras dos services críticos (streaks, progresso de metas, faixas de mês/ocorrências de recorrência); services com banco são exercitados pelos smoke tests da API.

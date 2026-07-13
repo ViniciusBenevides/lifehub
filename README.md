@@ -86,9 +86,14 @@ Pré-requisitos: Node 20+, [pnpm](https://pnpm.io) e uma conta gratuita no [Neon
 | `pnpm dev`                  | Servidor de desenvolvimento               |
 | `pnpm build` / `pnpm start` | Build e servidor de produção              |
 | `pnpm lint` / `pnpm format` | ESLint / Prettier                         |
+| `pnpm test`                 | Testes unitários (Vitest)                 |
 | `pnpm db:generate`          | Gera migration a partir do schema Drizzle |
 | `pnpm db:migrate`           | Aplica migrations no banco                |
 | `pnpm db:studio`            | Abre o Drizzle Studio                     |
+
+## PWA
+
+O LifeHub é instalável no celular (manifest + service worker próprios): abra o site no navegador do celular e use "Adicionar à tela inicial". A API REST em [`/api/v1`](./docs/api.md) é a mesma que o futuro app mobile (Expo) consumirá.
 
 ## Deploy (Vercel)
 

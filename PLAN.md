@@ -27,74 +27,74 @@ Ao fim de cada fase: `pnpm build && pnpm lint` sem erros + commit atômico.
 - [x] Verificação fim-a-fim: cadastro → seed → login → rotas protegidas
 - [x] Repo GitHub + deploy Vercel funcionando com login real
 
-## Fase 1 — Metas + Hábitos
+## Fase 1 — Metas + Hábitos ✅ (concluída em 2026-07-12)
 
 ### Metas (5.2)
 
-- [ ] Zod schemas + service `goals` (CRUD, progresso, milestones, ownership por userId)
-- [ ] Server Actions + rotas REST `/api/v1/goals` e `/api/v1/goals/:id/milestones`
-- [ ] Criação guiada (modal desktop / drawer mobile): título → área → tipo de progresso → prazo
-- [ ] 3 tipos de progresso: percentual manual (slider), milestones (% automático), numérico (atual/alvo)
-- [ ] Grid de cards por área + lista com filtros (status, área, prazo)
-- [ ] Card: barra de progresso, contagem regressiva, badge da área, hábitos vinculados
-- [ ] Detalhe: progresso, milestones reordenáveis, hábitos com streak, histórico
-- [ ] Completar meta: confete + `completedAt`
-- [ ] Empty/loading/error states
+- [x] Zod schemas + service `goals` (CRUD, progresso, milestones, ownership por userId)
+- [x] Server Actions + rotas REST `/api/v1/goals` e `/api/v1/goals/:id/milestones`
+- [x] Criação guiada (modal desktop / drawer mobile): título → área → tipo de progresso → prazo
+- [x] 3 tipos de progresso: percentual manual (slider), milestones (% automático), numérico (atual/alvo)
+- [x] Grid de cards por área + lista com filtros (status, área, prazo)
+- [x] Card: barra de progresso, contagem regressiva, badge da área, hábitos vinculados
+- [x] Detalhe: progresso, milestones reordenáveis, hábitos com streak, histórico
+- [x] Completar meta: confete + `completedAt`
+- [x] Empty/loading/error states
 
 ### Hábitos (5.3)
 
-- [ ] Zod schemas + service `habits` (CRUD, check/uncheck, streaks, estatísticas)
-- [ ] Server Actions + REST `/api/v1/habits`, `/api/v1/habits/:id/logs`
-- [ ] Frequências: diária, dias da semana, X vezes/semana
-- [ ] Rotina agrupada por período (manhã/tarde/noite/qualquer hora)
-- [ ] Check otimista com desfazer (TanStack Query)
-- [ ] Streak atual + recorde respeitando a frequência configurada
-- [ ] Heatmap estilo GitHub (12 meses, por hábito + geral)
-- [ ] Estatísticas: taxa 7/30 dias, melhor dia da semana
-- [ ] Vinculação a metas
-- [ ] Empty/loading/error states
+- [x] Zod schemas + service `habits` (CRUD, check/uncheck, streaks, estatísticas)
+- [x] Server Actions + REST `/api/v1/habits`, `/api/v1/habits/:id/logs`
+- [x] Frequências: diária, dias da semana, X vezes/semana
+- [x] Rotina agrupada por período (manhã/tarde/noite/qualquer hora)
+- [x] Check otimista com desfazer (TanStack Query)
+- [x] Streak atual + recorde respeitando a frequência configurada
+- [x] Heatmap estilo GitHub (12 meses, por hábito + geral)
+- [x] Estatísticas: taxa 7/30 dias, melhor dia da semana
+- [x] Vinculação a metas
+- [x] Empty/loading/error states
 
-## Fase 2 — Finanças (5.4)
+## Fase 2 — Finanças (5.4) ✅ (concluída em 2026-07-12)
 
-- [ ] Zod schemas + services `transactions`, `budgets`, `categories`
-- [ ] Server Actions + REST `/api/v1/transactions|budgets|categories`
-- [ ] Lançamento rápido (FAB mobile) com máscara BRL — sempre `amountCents`
-- [ ] Visão mensal navegável: receitas, despesas, saldo
-- [ ] Gráficos Recharts: pizza por categoria + evolução 6–12 meses
-- [ ] Orçamentos por categoria/mês com alertas visuais (80% / 100%)
-- [ ] Lista com filtros (mês, categoria, tipo, busca) e edição inline
-- [ ] Recorrências: geração idempotente no carregamento do mês
-- [ ] CRUD de categorias (ícone + cor)
-- [ ] Empty/loading/error states
+- [x] Zod schemas + services `transactions`, `budgets`, `categories`
+- [x] Server Actions + REST `/api/v1/transactions|budgets|categories`
+- [x] Lançamento rápido (FAB mobile) com máscara BRL — sempre `amountCents`
+- [x] Visão mensal navegável: receitas, despesas, saldo
+- [x] Gráficos Recharts: pizza por categoria + evolução 6–12 meses
+- [x] Orçamentos por categoria/mês com alertas visuais (80% / 100%)
+- [x] Lista com filtros (mês, categoria, tipo, busca) e edição inline
+- [x] Recorrências: geração idempotente no carregamento do mês
+- [x] CRUD de categorias (ícone + cor)
+- [x] Empty/loading/error states
 
-## Fase 3 — Sonhos + Atividades + Dashboard
+## Fase 3 — Sonhos + Atividades + Dashboard ✅ (concluída em 2026-07-12)
 
 ### Sonhos (5.5)
 
-- [ ] Service + Actions + REST `/api/v1/dreams`
-- [ ] Mural visual (imagem por URL + preview), reordenação drag-and-drop
-- [ ] Status sonhando → em progresso → realizado (celebração)
-- [ ] "Transformar em meta" (+ sugestão de economia mensal = custo ÷ meses)
-- [ ] Barra de progresso de economia quando vinculado
+- [x] Service + Actions + REST `/api/v1/dreams`
+- [x] Mural visual (imagem por URL + preview), reordenação drag-and-drop
+- [x] Status sonhando → em progresso → realizado (celebração)
+- [x] "Transformar em meta" (+ sugestão de economia mensal = custo ÷ meses)
+- [x] Barra de progresso de economia quando vinculado
 
 ### Atividades (5.6)
 
-- [ ] Service + Actions + REST `/api/v1/tasks`
-- [ ] Lista por dia (hoje/amanhã/semana) + visão semanal em colunas (desktop)
-- [ ] Prioridades com cores, vínculo a metas, recorrência simples
-- [ ] Drag-and-drop entre dias; atrasadas com "mover para hoje"
+- [x] Service + Actions + REST `/api/v1/tasks`
+- [x] Lista por dia (hoje/amanhã/semana) + visão semanal em colunas (desktop)
+- [x] Prioridades com cores, vínculo a metas, recorrência simples
+- [x] Drag-and-drop entre dias; atrasadas com "mover para hoje"
 
 ### Dashboard (5.1 — por último)
 
-- [ ] Service agregador com `Promise.all` (sem waterfalls)
-- [ ] Saudação + data por extenso; cards: hábitos hoje, saldo do mês, metas ativas, tarefas
-- [ ] Seção "Hoje" (checklist otimista) + mini heatmap 90 dias
-- [ ] Gráfico compacto do fluxo financeiro (6 meses) + carrossel de sonhos
+- [x] Service agregador com `Promise.all` (sem waterfalls)
+- [x] Saudação + data por extenso; cards: hábitos hoje, saldo do mês, metas ativas, tarefas
+- [x] Seção "Hoje" (checklist otimista) + mini heatmap 90 dias
+- [x] Gráfico compacto do fluxo financeiro (6 meses) + carrossel de sonhos
 
-## Fase 4 — Polimento + preparação mobile
+## Fase 4 — Polimento + preparação mobile ✅ (concluída em 2026-07-12)
 
-- [ ] Revisão de todos os empty/loading/error states
-- [ ] PWA: manifest, ícones, instalável no celular
-- [ ] Auditoria de performance (waterfalls, `Promise.all`)
-- [ ] Revisão da API `/api/v1` + documentação em `docs/api.md`
-- [ ] Testes Vitest dos services críticos: streaks, orçamentos, saldo mensal, recorrência
+- [x] Revisão de todos os empty/loading/error states
+- [x] PWA: manifest, ícones, instalável no celular
+- [x] Auditoria de performance (waterfalls, `Promise.all`)
+- [x] Revisão da API `/api/v1` + documentação em `docs/api.md`
+- [x] Testes Vitest dos services críticos: streaks, orçamentos, saldo mensal, recorrência

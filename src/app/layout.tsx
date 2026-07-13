@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 
 import { Providers } from "@/components/providers";
+import { ServiceWorkerRegister } from "@/components/features/shell/sw-register";
 
 import "./globals.css";
 
@@ -21,6 +22,14 @@ export const metadata: Metadata = {
     template: "%s · LifeHub",
   },
   description: "Seu Life OS pessoal: metas, hábitos, finanças, sonhos e atividades em um só lugar.",
+  appleWebApp: {
+    capable: true,
+    title: "LifeHub",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -43,6 +52,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <Providers>{children}</Providers>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

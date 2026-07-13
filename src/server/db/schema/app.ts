@@ -30,8 +30,43 @@ export const timeOfDayEnum = pgEnum("time_of_day", ["morning", "afternoon", "eve
 export const categoryTypeEnum = pgEnum("category_type", ["income", "expense"]);
 export const transactionTypeEnum = pgEnum("transaction_type", ["income", "expense"]);
 export const dreamStatusEnum = pgEnum("dream_status", ["dreaming", "in_progress", "achieved"]);
-export const taskStatusEnum = pgEnum("task_status", ["todo", "done"]);
+export const taskStatusEnum = pgEnum("task_status", ["todo", "in_progress", "done"]);
 export const taskPriorityEnum = pgEnum("task_priority", ["low", "medium", "high"]);
+export const projectStatusEnum = pgEnum("project_status", ["active", "completed", "archived"]);
+export const noteCategoryEnum = pgEnum("note_category", [
+  "estudo",
+  "trabalho",
+  "pessoal",
+  "ideias",
+  "tarefas",
+  "reunioes",
+]);
+export const habitCategoryEnum = pgEnum("habit_category", [
+  "saude",
+  "produtividade",
+  "bem_estar",
+  "aprendizado",
+  "fitness",
+  "mindfulness",
+  "social",
+  "outro",
+]);
+export const moodEnum = pgEnum("mood", [
+  "feliz",
+  "calmo",
+  "neutro",
+  "triste",
+  "ansioso",
+  "irritado",
+]);
+export const birthdayRelationshipEnum = pgEnum("birthday_relationship", [
+  "familia",
+  "amigo",
+  "trabalho",
+  "relacionamento",
+  "outro",
+]);
+export const pomodoroKindEnum = pgEnum("pomodoro_kind", ["focus", "short_break", "long_break"]);
 
 export const lifeAreas = pgTable(
   "life_areas",
@@ -102,6 +137,7 @@ export const habits = pgTable(
     name: text("name").notNull(),
     icon: text("icon"),
     color: text("color"),
+    category: habitCategoryEnum("category"),
     frequencyType: habitFrequencyTypeEnum("frequency_type").notNull(),
     // Dias da semana (0 = domingo … 6 = sábado) quando frequencyType = weekly_days.
     weeklyDays: integer("weekly_days").array(),
@@ -222,6 +258,41 @@ export const dreams = pgTable(
   ],
 );
 
+export const projects = pgTable(
+  "projects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    color: text("color").notNull().default("#3b82f6"),
+    deadline: date("deadline"),
+    status: projectStatusEnum("status").notNull().default("active"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("projects_user_id_idx").on(table.userId),
+    index("projects_user_id_status_idx").on(table.userId, table.status),
+  ],
+);
+
+export const taskCategories = pgTable(
+  "task_categories",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    icon: text("icon").notNull().default("📌"),
+    color: text("color").notNull().default("#6366f1"),
+    order: integer("order").notNull().default(0),
+  },
+  (table) => [index("task_categories_user_id_idx").on(table.userId)],
+);
+
 export const tasks = pgTable(
   "tasks",
   {
@@ -230,9 +301,15 @@ export const tasks = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     goalId: uuid("goal_id").references(() => goals.id, { onDelete: "set null" }),
+    projectId: uuid("project_id").references(() => projects.id, { onDelete: "set null" }),
+    categoryId: uuid("category_id").references(() => taskCategories.id, { onDelete: "set null" }),
     title: text("title").notNull(),
     notes: text("notes"),
     date: date("date").notNull(),
+    // Hora opcional da tarefa (prazo dentro do dia).
+    scheduledTime: time("scheduled_time"),
+    tags: text("tags").array(),
+    reminderEnabled: boolean("reminder_enabled").notNull().default(false),
     status: taskStatusEnum("status").notNull().default("todo"),
     priority: taskPriorityEnum("priority").notNull().default("medium"),
     recurrenceRule: text("recurrence_rule"),
@@ -246,7 +323,206 @@ export const tasks = pgTable(
   (table) => [
     index("tasks_user_id_date_idx").on(table.userId, table.date),
     index("tasks_goal_id_idx").on(table.goalId),
+    index("tasks_project_id_idx").on(table.projectId),
+    index("tasks_category_id_idx").on(table.categoryId),
     index("tasks_user_id_status_idx").on(table.userId, table.status),
     index("tasks_recurring_source_id_idx").on(table.recurringSourceId),
   ],
+);
+
+export const taskSubtasks = pgTable(
+  "task_subtasks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    taskId: uuid("task_id")
+      .notNull()
+      .references(() => tasks.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    done: boolean("done").notNull().default(false),
+    order: integer("order").notNull().default(0),
+  },
+  (table) => [index("task_subtasks_task_id_idx").on(table.taskId)],
+);
+
+export const notes = pgTable(
+  "notes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    category: noteCategoryEnum("category").notNull().default("pessoal"),
+    content: text("content").notNull().default(""),
+    pinned: boolean("pinned").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("notes_user_id_idx").on(table.userId),
+    index("notes_user_id_category_idx").on(table.userId, table.category),
+  ],
+);
+
+export const studyPlans = pgTable(
+  "study_plans",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    icon: text("icon").notNull().default("📚"),
+    durationDays: integer("duration_days").notNull(),
+    dailyGoalMinutes: integer("daily_goal_minutes").notNull(),
+    startDate: date("start_date").notNull(),
+    active: boolean("active").notNull().default(true),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("study_plans_user_id_idx").on(table.userId)],
+);
+
+export const studySubjects = pgTable(
+  "study_subjects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    planId: uuid("plan_id")
+      .notNull()
+      .references(() => studyPlans.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    minutesPerWeek: integer("minutes_per_week").notNull(),
+    color: text("color").notNull().default("#6366f1"),
+    order: integer("order").notNull().default(0),
+  },
+  (table) => [index("study_subjects_plan_id_idx").on(table.planId)],
+);
+
+export const studySessions = pgTable(
+  "study_sessions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    planId: uuid("plan_id").references(() => studyPlans.id, { onDelete: "cascade" }),
+    subjectId: uuid("subject_id").references(() => studySubjects.id, { onDelete: "set null" }),
+    date: date("date").notNull(),
+    minutes: integer("minutes").notNull(),
+  },
+  (table) => [index("study_sessions_user_id_date_idx").on(table.userId, table.date)],
+);
+
+export const pomodoroSessions = pgTable(
+  "pomodoro_sessions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "set null" }),
+    kind: pomodoroKindEnum("kind").notNull().default("focus"),
+    durationMinutes: integer("duration_minutes").notNull(),
+    date: date("date").notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("pomodoro_sessions_user_id_date_idx").on(table.userId, table.date)],
+);
+
+export const shoppingLists = pgTable(
+  "shopping_lists",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    done: boolean("done").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("shopping_lists_user_id_idx").on(table.userId)],
+);
+
+export const shoppingItems = pgTable(
+  "shopping_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    listId: uuid("list_id")
+      .notNull()
+      .references(() => shoppingLists.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    quantity: integer("quantity").notNull().default(1),
+    priceCents: integer("price_cents"),
+    purchased: boolean("purchased").notNull().default(false),
+    order: integer("order").notNull().default(0),
+  },
+  (table) => [index("shopping_items_list_id_idx").on(table.listId)],
+);
+
+export const birthdays = pgTable(
+  "birthdays",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    birthDate: date("birth_date").notNull(),
+    relationship: birthdayRelationshipEnum("relationship").notNull().default("outro"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("birthdays_user_id_idx").on(table.userId)],
+);
+
+export const diaryEntries = pgTable(
+  "diary_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    date: date("date").notNull(),
+    title: text("title"),
+    content: text("content").notNull(),
+    mood: moodEnum("mood"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("diary_entries_user_id_date_idx").on(table.userId, table.date)],
+);
+
+export const moodEntries = pgTable(
+  "mood_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    date: date("date").notNull(),
+    mood: moodEnum("mood").notNull(),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [uniqueIndex("mood_entries_user_id_date_uq").on(table.userId, table.date)],
+);
+
+export const dreamEntries = pgTable(
+  "dream_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    date: date("date").notNull(),
+    title: text("title").notNull(),
+    description: text("description"),
+    lucid: boolean("lucid").notNull().default(false),
+    nightmare: boolean("nightmare").notNull().default(false),
+    // Clareza da lembrança do sonho (0–5).
+    clarity: integer("clarity").notNull().default(3),
+    mood: moodEnum("mood"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("dream_entries_user_id_date_idx").on(table.userId, table.date)],
 );

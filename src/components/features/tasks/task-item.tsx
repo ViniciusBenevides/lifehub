@@ -1,15 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { ArrowRight, Check, Repeat, Target, Trash2 } from "lucide-react";
+import { ArrowRight, Check, Clock, ListChecks, Repeat, Target, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { TaskFormDialog } from "@/components/features/tasks/task-form-dialog";
+import {
+  TaskFormDialog,
+  type CategoryOption,
+  type SelectOption,
+} from "@/components/features/tasks/task-form-dialog";
 import { Button } from "@/components/ui/button";
 import { toDateKey } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { deleteTaskAction, updateTaskAction } from "@/server/actions/tasks";
-import type { TaskWithGoal } from "@/server/services/tasks";
+import type { TaskWithMeta } from "@/server/services/tasks";
 
 export const PRIORITY_STYLES = {
   high: "bg-rose-500",
@@ -26,10 +30,14 @@ export const PRIORITY_LABELS = {
 export function TaskItem({
   task,
   goals,
+  projects = [],
+  categories = [],
   showMoveToToday = false,
 }: {
-  task: TaskWithGoal;
-  goals: { id: string; title: string }[];
+  task: TaskWithMeta;
+  goals: SelectOption[];
+  projects?: SelectOption[];
+  categories?: CategoryOption[];
   showMoveToToday?: boolean;
 }) {
   const [done, setDone] = React.useState(task.status === "done");
@@ -61,6 +69,13 @@ export function TaskItem({
     const result = await deleteTaskAction(task.id);
     if (!result.ok) toast.error(result.error);
   }
+
+  const hasMetaRow =
+    task.goalTitle ||
+    task.categoryName ||
+    task.scheduledTime ||
+    task.subtasksTotal > 0 ||
+    (task.tags?.length ?? 0) > 0;
 
   return (
     <div className="group flex items-center gap-2.5 rounded-xl border bg-card px-2.5 py-2">
@@ -101,9 +116,43 @@ export function TaskItem({
             <Repeat className="ml-1.5 inline size-3 text-muted-foreground" aria-hidden />
           )}
         </span>
-        {task.goalTitle ? (
-          <span className="flex items-center gap-1 truncate text-xs text-muted-foreground">
-            <Target className="size-3" aria-hidden /> {task.goalTitle}
+        {hasMetaRow ? (
+          <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+            {task.scheduledTime ? (
+              <span className="inline-flex items-center gap-1">
+                <Clock className="size-3" aria-hidden /> {task.scheduledTime.slice(0, 5)}
+              </span>
+            ) : null}
+            {task.categoryName ? (
+              <span
+                className="inline-flex items-center gap-1"
+                style={{ color: task.categoryColor ?? undefined }}
+              >
+                {task.categoryIcon} {task.categoryName}
+              </span>
+            ) : null}
+            {task.subtasksTotal > 0 ? (
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1",
+                  task.subtasksDone === task.subtasksTotal && "text-emerald-500",
+                )}
+              >
+                <ListChecks className="size-3" aria-hidden />
+                {task.subtasksDone}/{task.subtasksTotal}
+              </span>
+            ) : null}
+            {task.goalTitle ? (
+              <span className="inline-flex min-w-0 items-center gap-1">
+                <Target className="size-3 shrink-0" aria-hidden />
+                <span className="truncate">{task.goalTitle}</span>
+              </span>
+            ) : null}
+            {task.tags?.slice(0, 3).map((tag) => (
+              <span key={tag} className="text-primary">
+                #{tag}
+              </span>
+            ))}
           </span>
         ) : null}
       </button>
@@ -123,7 +172,14 @@ export function TaskItem({
         <Trash2 className="size-3.5" aria-hidden />
       </Button>
 
-      <TaskFormDialog task={task} goals={goals} open={editOpen} onOpenChange={setEditOpen} />
+      <TaskFormDialog
+        task={task}
+        goals={goals}
+        projects={projects}
+        categories={categories}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+      />
     </div>
   );
 }

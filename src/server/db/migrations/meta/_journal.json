@@ -15,6 +15,13 @@
       "when": 1783895919937,
       "tag": "0001_many_bruce_banner",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783955731208,
+      "tag": "0002_aberrant_piledriver",
+      "breakpoints": true
     }
   ]
 }

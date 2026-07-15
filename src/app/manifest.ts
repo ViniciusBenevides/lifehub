@@ -4,7 +4,14 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "LifeHub — Life OS pessoal",
     short_name: "LifeHub",
-    description: "Metas, hábitos, finanças, sonhos e atividades em um só lugar.",
+    description:
+      "Tarefas, projetos, hábitos, metas, estudos, pomodoro, finanças, diários e humor em um só lugar.",
+    shortcuts: [
+      { name: "Início", url: "/inicio" },
+      { name: "Tarefas", url: "/atividades" },
+      { name: "Pomodoro", url: "/pomodoro" },
+      { name: "Finanças", url: "/financas" },
+    ],
     id: "/",
     start_url: "/inicio",
     display: "standalone",

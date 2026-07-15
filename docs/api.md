@@ -80,3 +80,84 @@ Datas usam `AAAA-MM-DD`; meses usam `AAAA-MM`; dinheiro é sempre **centavos** (
 | Método | Rota         | Descrição                                                                                                              |
 | ------ | ------------ | ---------------------------------------------------------------------------------------------------------------------- |
 | GET    | `/dashboard` | Agregado: hábitos de hoje, tarefas, saldo do mês, metas ativas com % médio, heatmap 90d, fluxo 6m e sonhos em destaque |
+
+## Tarefas 2.0
+
+| Método | Rota                  | Descrição                                                                                                 |
+| ------ | --------------------- | --------------------------------------------------------------------------------------------------------- |
+| POST   | `/tasks`              | Aceita também `scheduledTime?`, `tags?[]`, `categoryId?`, `projectId?`, `reminderEnabled?`, `subtasks?[]` |
+| GET    | `/tasks/:id/subtasks` | Lista subtarefas                                                                                          |
+| POST   | `/tasks/:id/subtasks` | Cria subtarefa (`title`)                                                                                  |
+| PATCH  | `/subtasks/:id`       | Atualiza (`title?`, `done?`)                                                                              |
+| DELETE | `/subtasks/:id`       | Exclui subtarefa                                                                                          |
+| GET    | `/task-categories`    | Lista categorias (semeia as padrão na primeira chamada)                                                   |
+| POST   | `/task-categories`    | Cria categoria (`name`, `icon`, `color`)                                                                  |
+
+## Projetos
+
+| Método | Rota                | Descrição                                           |
+| ------ | ------------------- | --------------------------------------------------- |
+| GET    | `/projects?status=` | Lista com progresso (tarefas concluídas/total)      |
+| POST   | `/projects`         | Cria (`name`, `description?`, `color`, `deadline?`) |
+| GET    | `/projects/:id`     | Detalhe com progresso                               |
+| PATCH  | `/projects/:id`     | Atualiza (inclui `status`)                          |
+| DELETE | `/projects/:id`     | Exclui (tarefas ficam sem projeto)                  |
+
+## Notas
+
+| Método | Rota                       | Descrição                                        |
+| ------ | -------------------------- | ------------------------------------------------ |
+| GET    | `/notes?categoria=&busca=` | Lista (fixadas primeiro)                         |
+| POST   | `/notes`                   | Cria (`title`, `category`, `content`, `pinned?`) |
+| PATCH  | `/notes/:id`               | Atualiza                                         |
+| DELETE | `/notes/:id`               | Exclui                                           |
+
+## Pomodoro e Estudos
+
+| Método | Rota              | Descrição                                                                     |
+| ------ | ----------------- | ----------------------------------------------------------------------------- |
+| GET    | `/pomodoro?data=` | Estatísticas do dia (`focusSessions`, `focusMinutes`)                         |
+| POST   | `/pomodoro`       | Registra sessão (`kind`, `durationMinutes`, `date`, `taskId?`)                |
+| GET    | `/study/plans`    | Planos ativos com matérias, progresso semanal e meta diária                   |
+| POST   | `/study/plans`    | Cria plano (`name`, `icon`, `durationDays`, `dailyGoalMinutes`, `subjects[]`) |
+| POST   | `/study/sessions` | Registra sessão de estudo (`planId`, `subjectId?`, `date`, `minutes`)         |
+
+## Compras
+
+| Método | Rota                  | Descrição                                          |
+| ------ | --------------------- | -------------------------------------------------- |
+| GET    | `/shopping-lists`     | Listas com itens, contagens e totais em centavos   |
+| POST   | `/shopping-lists`     | Cria lista (`name`)                                |
+| PATCH  | `/shopping-lists/:id` | Atualiza (`name?`, `done?`)                        |
+| POST   | `/shopping-lists/:id` | Adiciona item (`name`, `quantity?`, `priceCents?`) |
+| DELETE | `/shopping-lists/:id` | Exclui lista e itens                               |
+| PATCH  | `/shopping-items/:id` | Atualiza item (inclui `purchased`)                 |
+| DELETE | `/shopping-items/:id` | Exclui item                                        |
+
+## Vida Pessoal
+
+| Método | Rota                      | Descrição                                                                          |
+| ------ | ------------------------- | ---------------------------------------------------------------------------------- |
+| GET    | `/birthdays`              | Aniversários ordenados pela proximidade (`daysUntil`, `turnsAge`)                  |
+| POST   | `/birthdays`              | Cria (`name`, `birthDate`, `relationship`, `notes?`)                               |
+| PATCH  | `/birthdays/:id`          | Atualiza                                                                           |
+| DELETE | `/birthdays/:id`          | Exclui                                                                             |
+| GET    | `/moods?de=&ate=`         | Registros de humor                                                                 |
+| POST   | `/moods`                  | Upsert do dia (`date`, `mood`, `note?`) — 1 registro por dia                       |
+| GET    | `/moods/analysis`         | Total, sequência, últimos 7 dias, humor mais frequente e distribuição              |
+| GET    | `/diary`                  | Entradas do diário (desc)                                                          |
+| POST   | `/diary`                  | Cria (`date`, `title?`, `content`, `mood?`)                                        |
+| PATCH  | `/diary/:id`              | Atualiza                                                                           |
+| DELETE | `/diary/:id`              | Exclui                                                                             |
+| GET    | `/dream-journal`          | Sonhos registrados (desc)                                                          |
+| POST   | `/dream-journal`          | Cria (`date`, `title`, `description?`, `lucid?`, `nightmare?`, `clarity`, `mood?`) |
+| PATCH  | `/dream-journal/:id`      | Atualiza                                                                           |
+| DELETE | `/dream-journal/:id`      | Exclui                                                                             |
+| GET    | `/dream-journal/analysis` | Total, lúcidos, pesadelos, clareza média e distribuição por humor                  |
+
+## Backup
+
+| Método | Rota      | Descrição                                                              |
+| ------ | --------- | ---------------------------------------------------------------------- |
+| GET    | `/backup` | Exporta todos os dados do usuário em JSON (`version`, `data`)          |
+| POST   | `/backup` | Restaura um backup exportado (idempotente: ids existentes são pulados) |

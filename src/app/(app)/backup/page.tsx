@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/features/shell/coming-soon";
+import { BackupView } from "@/components/features/backup/backup-view";
 import { PageHeader } from "@/components/features/shell/page-header";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export default function BackupPage() {
         title="Backup & Restauração"
         description="Exporte e restaure todos os seus dados."
       />
-      <ComingSoon module="backup" />
+      <BackupView />
     </>
   );
 }
